@@ -25,6 +25,7 @@
 <script>
 	import loginApi from '../../api/login';
     export default {
+//        name: "Login",
         data: function(){
             return {
                 loading:false,
@@ -53,7 +54,7 @@
 				                this.$message.success(res.msg);
 				                console.log(res.data)
 				                localStorage.setItem('sysuser',JSON.stringify(res.data));
-				                this.$router.push({path: '/'});
+				                this.$router.push({path: '/dashboard'});
 				              } else {
 				                this.$message.error(res.msg);
 				              }

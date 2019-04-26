@@ -17,18 +17,23 @@ Vue.prototype.$axios = axios;
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
   const ms_username = localStorage.getItem('ms_username');
+  console.log("a")
   if(to.meta.permission){
+    console.log("b")
     // 鉴权
     let menuItems = localStorage.getItem('menuItems');
     console.log(menuItems);
     ms_username === 'admin' ? next() : next('/403');
   }else{
+    console.log("c")
     // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
     if(navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor'){
+      console.log("d")
       Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
         confirmButtonText: '确定'
       });
     }else{
+      console.log("e")
       next();
     }
   }
