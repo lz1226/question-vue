@@ -9,7 +9,8 @@ const Http = {
       console.log("urlget")
       console.log(url)
         // url = "/beam_ht" + url
-        // url = "http://localhost:8080" +  url
+        url = "http://localhost:8989" +  url
+      console.log(url)
         return axios.get(url, {
             params: data,
         }).then((res) => {
@@ -74,31 +75,22 @@ const Http = {
         })
     },
     post(url, data) {
-      // application/x-www-form-urlencoded
-      //   axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
-        axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
-      const config = {
-        method: 'post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true,
-        credentials: 'same-origin',
-      };
         console.log("urlpost")
         console.log(url)
         console.log(data)
         // url = "/beam_ht" + url
-        // url = "http://localhost:8080" + url
-        url = "http://localhost:8080/login"
+        url = "http://localhost:8989" + url
+        // url = "http://localhost:8080/login"
         // url = url
         return axios.post(url, data).then((res) => {
+          console.log("走了")
             console.log(res.data)
-            if(res.data.error===false){
+            if(res.data.code === '2000'){
+                console.log("ifPost")
                 return Promise.resolve(res.data); //成功
             }
             else{
+              console.log("else")
                 if (res.data.code === -1) {
                     Message.error(res.data.msg);
                     window.location = "/#/login";
@@ -119,7 +111,7 @@ const Http = {
 
         }).catch((err) => {
             //超时之后在这里捕抓错误信息.
-
+            console.log("捕捉")
             if (err.response) {
                 var res = {
                     code: err.code,

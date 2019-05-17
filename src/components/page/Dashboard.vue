@@ -4,14 +4,21 @@
             <el-col :span="8">
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
-                        <img :src="sysuser.avatar" class="user-avator" alt="">
-                        <div class="user-info-cont">
-                            <div class="user-info-name">{{sysuser.account}}</div>
-                            <div>{{sysuser.roleNames[0]}}</div>
-                        </div>
+                      <img src="../../assets/logo.png" class="user-avator" alt="">
+                      <div class="user-info-cont">
+                        <div class="user-info-name">test</div>
+                        <div>游客</div>
+                      </div>
+                        <!--<img :src="sysuser.avatar" class="user-avator" alt="">-->
+                        <!--<div class="user-info-cont">-->
+                            <!--<div class="user-info-name">{{sysuser.account}}</div>-->
+                            <!--<div>{{sysuser.roleNames[0]}}</div>-->
+                        <!--</div>-->
                     </div>
-                    <div class="user-info-list">真实姓名：<span>{{sysuser.name}}</span></div>
-                    <div class="user-info-list">所在部门：<span>{{sysuser.deptName}}</span></div>
+                    <div class="user-info-list">真实姓名：<span>test</span></div>
+                    <div class="user-info-list">所在部门：<span>产品部</span></div>
+                    <!--<div class="user-info-list">真实姓名：<span>{{sysuser.name}}</span></div>-->
+                    <!--<div class="user-info-list">所在部门：<span>{{sysuser.deptName}}</span></div>-->
                 </el-card>
 
             </el-col>
@@ -62,44 +69,45 @@
             Schart
         },
         computed: {
-            sysuser(){
-                let sysuser = JSON.parse(localStorage.getItem('sysuser'));
-                console.log(sysuser.account);
-                console.log(sysuser.avatar);
-                return sysuser?sysuser:this.user;
-            }
+//            sysuser(){
+//                let sysuser = JSON.parse(localStorage.getItem('sysuser'));
+//                console.log(sysuser.account);
+//                console.log(sysuser.avatar);
+//                return sysuser?sysuser:this.user;
+//            }
         },
         created(){
-            this.getDashboardContent();
-            this.handleListener();
+//            this.getDashboardContent();
+//            this.handleListener();
         },
         activated(){
-            this.handleListener();
+//            this.handleListener();
         },
         deactivated(){
-            window.removeEventListener('resize', this.renderChart);
-            bus.$off('collapse', this.handleBus);
+//            window.removeEventListener('resize', this.renderChart);
+//            bus.$off('collapse', this.handleBus);
         },
         methods: {
 
-            getDashboardContent(){
-                DashboardApi.getDashboardContent().then((res)=>{
-                    console.log(res);
-                },(err) => {
-                    console.log(err)
-                    this.$message.error(err.msg);
-                })
-            },
-            handleListener(){
-                bus.$on('collapse', this.handleBus);
-                // 调用renderChart方法对图表进行重新渲染
-                window.addEventListener('resize', this.renderChart)
-            },
-            handleBus(msg){
-                setTimeout(() => {
-                    this.renderChart()
-                }, 300);
-            }
+//            getDashboardContent(){
+//                DashboardApi.getDashboardContent().then((res)=>{
+//                    console.log(res);
+//                },(err) => {
+//                    console.log("错误信息")
+//                    console.log(err)
+//                    this.$message.error(err.msg);
+//                })
+//            },
+//            handleListener(){
+//                bus.$on('collapse', this.handleBus);
+//                // 调用renderChart方法对图表进行重新渲染
+//                window.addEventListener('resize', this.renderChart)
+//            },
+//            handleBus(msg){
+//                setTimeout(() => {
+//                    this.renderChart()
+//                }, 300);
+//            }
         }
     }
 

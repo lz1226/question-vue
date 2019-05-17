@@ -3,8 +3,8 @@
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                <el-form-item prop="name">
+                    <el-input v-model="ruleForm.name" placeholder="name">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -24,17 +24,20 @@
 
 <script>
 	import loginApi from '../../api/login';
+//  import * as md5 from 'js-md5'
+  import {mapActions} from 'vuex'
+
     export default {
-//        name: "Login",
+        name: "Login",
         data: function(){
             return {
                 loading:false,
                 ruleForm: {
-                    username: 'test',
+                    name: 'test',
                     password: '123456'
                 },
                 rules: {
-                    username: [
+                    name: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
                     password: [
@@ -44,30 +47,34 @@
             }
         },
         methods: {
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.loading = true;
-                        loginApi.login(this.ruleForm).then((res) => {
-				              this.loading = false
-				              if (res.error === false) {
-				                this.$message.success(res.msg);
-				                console.log(res.data)
-				                localStorage.setItem('sysuser',JSON.stringify(res.data));
-				                this.$router.push({path: '/dashboard'});
-				              } else {
-				                this.$message.error(res.msg);
-				              }
-				            }, (err) => {
-				              this.loading = false
-				              this.$message.error(err.msg);
-				        })
+          ...mapActions(['login']),
+          async doLogin(param) {
+            const ret = await loginApi.login(param);
+            if (ret.code !== '2000') {
+              this.$alert(ret.error)
+            } else {
+              const res = {};
+              res.id = ret.data.id;
+              res.name = ret.data.name;
+              this.$router.push({path: '/helloword'});
+            }
 
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+          },
+          submitForm(formName) {
+              const that = this;
+              this.$refs[formName].validate((valid) => {
+                if (valid) {
+                  const param = {};
+                  console.log(that.ruleForm.name)
+                  console.log(that.ruleForm.password)
+                  param.name = that.ruleForm.name;
+                  param.password = that.ruleForm.password;
+//                  param.md5Password = md5(that.ruleForm.password);
+                  that.doLogin(param);
+                }else {
+                  return false;
+                }
+              });
             }
         }
     }
