@@ -15,7 +15,7 @@ const Http = {
             params: data,
         }).then((res) => {
 
-            if(res.data.error===false){
+            if(res.data.code === '2000'){
                 return Promise.resolve(res.data); //成功
             }
             else{
