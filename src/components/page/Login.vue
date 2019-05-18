@@ -23,8 +23,9 @@
 </template>
 
 <script>
-	import loginApi from '../../api/login';
+	// import loginApi from '../../api/login';
 //  import * as md5 from 'js-md5'
+  import * as loginApi from '@/api/login';
   import {mapActions} from 'vuex'
 
     export default {
@@ -43,19 +44,22 @@
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
                     ]
-                }
+                },
             }
         },
         methods: {
           ...mapActions(['login']),
           async doLogin(param) {
+            console.log("参数")
+            console.log(param)
             const ret = await loginApi.login(param);
+            console.log(ret.data)
             if (ret.code !== '2000') {
               this.$alert(ret.error)
             } else {
               const res = {};
-              res.id = ret.data.id;
-              res.name = ret.data.name;
+              // res.id = ret.data.id;
+              // res.name = ret.data.name;
               this.$router.push({path: '/home'});
             }
 
@@ -69,6 +73,11 @@
                   console.log(that.ruleForm.password)
                   param.name = that.ruleForm.name;
                   param.password = that.ruleForm.password;
+
+                  const sysUser = {};
+                  sysUser.name = that.ruleForm.name;
+                  sysUser.password = that.ruleForm.password;
+                  param.sysUser = sysUser;
 //                  param.md5Password = md5(that.ruleForm.password);
                   that.doLogin(param);
                 }else {
