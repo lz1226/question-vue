@@ -15,11 +15,11 @@ export default new Router({
       name: 'Login',
       component: resolve => require(['../components/page/Login.vue'], resolve)
     },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: resolve => require(['../components/page/Dashboard.vue'], resolve)
-    },
+    // {
+    //   path: '/dashboard',
+    //   name: 'dashboard',
+    //   component: resolve => require(['../components/page/Dashboard.vue'], resolve)
+    // },
     // {
     //   path: '/home',
     //   name: 'home',
@@ -44,22 +44,22 @@ export default new Router({
           component: resolve => require(['../components/page/Dashboard.vue'], resolve),
           meta: { title: '系统首页' }
         },
-        // {
-        //   // 权限页面
-        //   path: '/permission',
-        //   component: resolve => require(['../components/page/Permission.vue'], resolve),
-        //   meta: { title: '权限测试', permission: true }
-        // },
-        // {
-        //   path: '/404',
-        //   component: resolve => require(['../components/page/404.vue'], resolve),
-        //   meta: { title: '404' }
-        // },
-        // {
-        //   path: '/403',
-        //   component: resolve => require(['../components/page/403.vue'], resolve),
-        //   meta: { title: '403' }
-        // }
+        {
+          // 权限页面
+          path: '/permission',
+          component: resolve => require(['../components/page/Permission.vue'], resolve),
+          meta: { title: '权限测试', permission: true }
+        },
+        {
+          path: '/404',
+          component: resolve => require(['../components/page/404.vue'], resolve),
+          meta: { title: '404' }
+        },
+        {
+          path: '/403',
+          component: resolve => require(['../components/page/403.vue'], resolve),
+          meta: { title: '403' }
+        }
       ]
     },
     // 重定向

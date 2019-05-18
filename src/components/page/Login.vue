@@ -56,7 +56,7 @@
               const res = {};
               res.id = ret.data.id;
               res.name = ret.data.name;
-              this.$router.push({path: '/'});
+              this.$router.push({path: '/home'});
             }
 
           },

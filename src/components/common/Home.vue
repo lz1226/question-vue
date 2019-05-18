@@ -3,7 +3,7 @@
         <v-head></v-head>
         <v-sidebar></v-sidebar>
         <div class="content-box" :class="{'content-collapse':collapse}">
-            <!--<v-tags></v-tags>-->
+            <v-tags></v-tags>
             <div class="content">
                 <transition name="move" mode="out-in">
                     <keep-alive :include="tagsList">
@@ -28,8 +28,7 @@
             }
         },
         components:{
-            vHead, vSidebar
-          // , vTags
+            vHead, vSidebar , vTags
         },
         created(){
             bus.$on('collapse', msg => {

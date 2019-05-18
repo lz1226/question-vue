@@ -2,9 +2,9 @@
     <div class="tags" v-if="showTags">
         <ul>
             <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
-                <!--<router-link :to="item.path" class="tags-li-title">-->
-                    <!--{{item.title}}-->
-                <!--</router-link>-->
+                <router-link :to="item.path" class="tags-li-title">
+                    {{item.title}}
+                </router-link>
                 <span class="tags-li-icon" @click="closeTags(index)"><i class="el-icon-close"></i></span>
             </li>
         </ul>
@@ -58,6 +58,8 @@
             },
             // 设置标签
             setTags(route){
+              console.log("route")
+              console.log(route)
                 const isExist = this.tagsList.some(item => {
                     return item.path === route.fullPath;
                 })
@@ -84,6 +86,8 @@
         },
         watch:{
             $route(newValue, oldValue){
+              console.log("信息")
+              console.log(newValue)
                 this.setTags(newValue);
             }
         },
