@@ -59,11 +59,14 @@ export default new Router({
           path: '/403',
           component: resolve => require(['../components/page/403.vue'], resolve),
           meta: { title: '403' }
-        }
+        },
+        {
+          path: '/sysuser',
+          component: resolve => require(['../components/sys/sysuser.vue'], resolve),
+          meta: { title: '用户管理' }
+        },
       ]
     },
-    // 重定向
-
     {
       path: '/helloword',
       name: 'helloword',
