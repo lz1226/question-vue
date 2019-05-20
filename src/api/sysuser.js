@@ -5,7 +5,7 @@ export const login = ({name,password,sysUser}) => post('/sysUser/login', {name,p
 /**
  * 获取用户信息
  */
-export const listUser = ({pageNum, pageSize}) => post('/sysUser/list', {pageNum, pageSize});
+export const listUser = ({pageNum, pageSize,account,name}) => post('/sysUser/list', {pageNum, pageSize,account,name});
 
 /**
  * 通过用户的id得到用户的信息
@@ -15,7 +15,14 @@ export const findUser = (id) => get(`/sysUser/find/${id}`);
  * 编辑用户信息
  */
 export const editUser = ({sysUser,roleIds}) => post('/sysUser/editUser',{sysUser,roleIds});
-
+/**
+ * 修改用户的状态
+ */
+export const changeStatus = (id,status) => get(`/sysUser/changeStatus/${id}/${status}`);
+/**
+ * 批量删除用户的信息
+ */
+export const batchDelete = (ids) => post('/sysUser/batchDelete',ids);
 
 
 // import http from '@/util/http'

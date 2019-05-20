@@ -139,9 +139,9 @@
                     <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday" value-format="yyyy-MM-dd"
                                     style="width: 100%;"></el-date-picker>
                 </el-form-item>
-                <!--<el-form-item label="是否可用" prop="status">-->
-                    <!--<el-switch v-model="form.status" :active-text="form.status ? '可用' : '不可用'"></el-switch>-->
-                <!--</el-form-item>-->
+                <el-form-item label="是否可用" prop="status">
+                    <el-switch v-model="form.status" :active-text="form.status ? '可用' : '不可用'"></el-switch>
+                </el-form-item>
 
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -151,9 +151,9 @@
             </span>
         </el-dialog>
         <!-- 编辑弹出框 -->
-        <el-dialog title="选择部门" :modal="false" :visible.sync="selectDeptDialog" width="30%">
-            <el-tree :data="deptTreeData" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="selectDeptClick"></el-tree>
-        </el-dialog>
+        <!--<el-dialog title="选择部门" :modal="false" :visible.sync="selectDeptDialog" width="30%">-->
+            <!--<el-tree :data="deptTreeData" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="selectDeptClick"></el-tree>-->
+        <!--</el-dialog>-->
 
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
@@ -175,14 +175,14 @@
         name: 'basetable',
         data() {
             return {
-                // selectDeptDialog:false,
+//                 selectDeptDialog:false,
                 // page: {pageNo: 1, pageSize: 20},
-                // multipleSelection: [],
-                // is_search: false,
-                // ids: [],
-                req: {},
-                // accountInput: true,
-                // loading: false,
+                 multipleSelection: [],
+//                 is_search: false,
+              ids: [],
+              req: {},
+              accountInput: true,//账号是否可编辑
+              loading: false,
                 // deptTreeData: [],
                 // defaultProps: {
                 //     children: 'children',
@@ -213,8 +213,15 @@
         },
         computed: {},
         methods: {
+          handleCurrentChange(current) {
+            this.pagination.pageNum = current;
+            this.initData();
+          },
             async initData() {
               const param = {...this.pagination};
+              console.log(param)
+              param.account = this.req.account;
+              param.name = this.req.name;
               const ret = await SysUserApi.listUser(param);
               if (ret.code === '2000') {
                 this.tableData = ret.data;
@@ -244,6 +251,8 @@
           // 保存编辑
           async saveEdit() {
             this.$set(this.tableData, this.idx, this.form);
+            console.log("信息")
+            console.log(this.form)
             if(this.form.status == true){
               this.form.status = 1;
             }else{
@@ -260,41 +269,105 @@
             if(ret.code === "2000"){
               this.editVisible = false;
               this.initData();
+              this.$message.success('操作成功');
             }
           },
-
-
-
-            goToSelectDept(){
-                this.selectDeptDialog = true;
+          // 上下架
+           async changeStatus(id, flag) {
+              const status = !flag ? 0 : 1;
+              const ret = await SysUserApi.changeStatus(id,status);
+              console.log(ret)
+              if(ret.code === "2000"){
+                this.$message.success('操作成功');
+              }else{
+                this.$message.error(ret.error);
+              }
             },
-            selectDeptClick(data){
-                this.selectDeptDialog = false;
-                this.form.deptId=data.id;
-                console.log(data);
-                this.form.deptName=data.name;
-            },
-            leftDeptClick(data){
-                let deptId = [];
-                deptId.push(data.id);
-                if(data.children!=''){
-                    deptId = this.getChildrenDept(data.children,deptId);
-                }
-                this.req.deptIds = deptId.join(",");
-                this.reload();
-            },
-            getChildrenDept(data,deptId){
-                data.forEach(item=>{
-                    deptId.push(item.id)
-                    if(item.children!=''){
-                        this.getChildrenDept(item.children,deptId);
-                    }
+
+           handleResetPassword(id) {
+                let ids = [id]
+                this.$confirm('是否确认将密码重置为：123456？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                  const sysUser = {password:'123456',id:id};
+                  const param = {
+                    sysUser
+                  }
+                  SysUserApi.editUser(param);
+                  this.$message.success('操作成功');
                 })
-
-                return deptId;
             },
-            handleAvatarSuccess(res, file) {
+            handleAdd() {
+              this.form = {};
+              this.editVisible = true;
+              this.accountInput = false;
+              this.form.status = true;
+            },
+            handleDelete(index, row) {
+              this.ids = [row.id];
+              this.delVisible = true;
+            },
+            // 确定删除
+            async deleteRow() {
+              console.log(this.ids)
+              const ids = this.ids;
+              const ret = await SysUserApi.batchDelete(ids);
+              if(ret.code === "2000"){
+                this.$message.success('操作成功');
+                this.initData();
+              }
+              this.delVisible = false;
+            },
+            search() {
+              console.log(this.req)
+              this.initData();
+  //                this.is_search = true;
+              // this.getData();
+            },
+            delAll() {
+              this.delVisible = true;
+              this.ids = [];
+              const length = this.multipleSelection.length;
+              for (let i = 0; i < length; i++) {
+                this.ids.push(this.multipleSelection[i].id);
+              }
 
+            },
+            handleSelectionChange(val) {
+              this.multipleSelection = val;
+            },
+
+//            goToSelectDept(){
+//                this.selectDeptDialog = true;
+//            },
+//            selectDeptClick(data){
+//                this.selectDeptDialog = false;
+//                this.form.deptId=data.id;
+//                console.log(data);
+//                this.form.deptName=data.name;
+//            },
+//            leftDeptClick(data){
+//                let deptId = [];
+//                deptId.push(data.id);
+//                if(data.children!=''){
+//                    deptId = this.getChildrenDept(data.children,deptId);
+//                }
+//                this.req.deptIds = deptId.join(",");
+//                this.reload();
+//            },
+//            getChildrenDept(data,deptId){
+//                data.forEach(item=>{
+//                    deptId.push(item.id)
+//                    if(item.children!=''){
+//                        this.getChildrenDept(item.children,deptId);
+//                    }
+//                })
+//
+//                return deptId;
+//            },
+            handleAvatarSuccess(res, file) {
                 console.log(res);
                 console.log(file);
                 if (res.error === false) {
@@ -318,10 +391,7 @@
                 }
                 return isJPG && isLt2M;
             },
-            handleCurrentChange(current) {
-              this.pagination.pageNum = current;
-              this.initData();
-            },
+
             changePageSize(value) { // 修改每页条数size
                 this.page.pageNo = 1
                 this.page.pageSize = value
@@ -332,83 +402,10 @@
                 this.page.pageNo = 1
                 // this.getData()
             },
-            search() {
-                this.is_search = true;
-                // this.getData();
-            },
 
-            handleAdd() {
-                this.form = {};
-                this.editVisible = true;
-                this.accountInput = false;
-                this.form.status = true;
-            },
 
-            handleDelete(index, row) {
-                this.ids = [row.id];
-                this.delVisible = true;
-            },
-            delAll() {
-                this.delVisible = true;
-                this.ids = [];
-                const length = this.multipleSelection.length;
-                for (let i = 0; i < length; i++) {
-                    this.ids.push(this.multipleSelection[i].id);
-                }
 
-            },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
 
-            // 确定删除
-            deleteRow() {
-                SysUserApi.batchDelete(this.ids).then((res) => {
-                    if (res.error === false) {
-                        this.$message.success(res.msg);
-                        this.reload()
-                    } else {
-                        this.$message.error(res.msg);
-                    }
-
-                }, (err) => {
-                    this.$message.error(err.msg);
-                })
-                this.delVisible = false;
-            },
-            handleResetPassword(id) {
-                let ids = [id]
-                this.$confirm('是否确认将密码重置为：123456？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    SysUserApi.resetPassword(ids).then((res) => {
-                        if (res.error === false) {
-                            this.$message.success(res.msg);
-                            this.reload()
-                        } else {
-                            this.$message.error(res.msg);
-                        }
-
-                    }, (err) => {
-                        this.$message.error(err.msg);
-                    })
-                })
-            },
-            // 上下架
-            changeStatus(id, flag) {
-                SysUserApi.changeStatus(id, !flag ? 0 : 1).then((res) => {
-                    if (res.error === false) {
-                        this.$message.success('操作成功');
-                        this.reload()
-                    } else {
-                        this.$message.error(err.msg);
-                    }
-                }, (err) => {
-                    this.$message.error(err.msg);
-                })
-            }
         }
     }
 
