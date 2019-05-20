@@ -182,6 +182,7 @@
     import * as SysUserApi from '../../api/sysuser';
     import * as SysRoleApi from '../../api/sysrole';
     import {sysUserUploadUrl} from '@/api/file-upload';
+    import {imageUri} from '@/api/base/request-util';
 
     export default {
         name: 'basetable',
@@ -243,9 +244,13 @@
               const ret = await SysUserApi.listUser(param);
               if (ret.code === '2000') {
                 this.tableData = ret.data;
+                console.log(this.tableData)
+                console.log(this.tableData.avatar)
                 this.tableData.forEach(item => {
-                    item.status = Boolean(item.status)
+                    item.status = Boolean(item.status);
+                  item.avatar = imageUri + '/' + item.avatar;
                 })
+                console.log(this.tableData)
                 this.pagination = ret.pagination;
               }
             },
