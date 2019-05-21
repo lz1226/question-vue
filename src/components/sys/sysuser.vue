@@ -99,16 +99,27 @@
         <el-dialog title="编辑" :visible.sync="editVisible" width="50%">
 
             <el-form ref="form" :model="form" label-width="100px">
-                <el-upload
-                    label=" 头像"
-                    class="avatar-uploader el-dialog--center"
-                    action="/beam_ht/file/upload"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="form.avatar" :src="form.avatar" class="avatar" key="1"/>
-                    <i v-else class="el-icon-plus avatar-uploader-icon" key="2"></i>
-                </el-upload>
+                <!--<el-upload-->
+                    <!--label=" 头像"-->
+                    <!--class="avatar-uploader el-dialog&#45;&#45;center"-->
+                    <!--action="/beam_ht/file/upload"-->
+                    <!--:show-file-list="false"-->
+                    <!--:on-success="handleAvatarSuccess"-->
+                    <!--:before-upload="beforeAvatarUpload">-->
+                    <!--<img v-if="form.avatar" :src="form.avatar" class="avatar" key="1"/>-->
+                    <!--<i v-else class="el-icon-plus avatar-uploader-icon" key="2"></i>-->
+                <!--</el-upload>-->
+              <el-upload
+                label=" 头像"
+                class="avatar-uploader el-dialog--center"
+                name="files"
+                :headers="uploadHeaders"
+                :action="uploadUrl"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess">
+                <img v-if="form.avatar" :src="form.avatar" class="avatar" key="1"/>
+                <i v-else class="el-icon-plus avatar-uploader-icon" key="2"></i>
+              </el-upload>
                 <el-form-item label="账号">
                     <el-input :disabled="accountInput" v-model="form.account"></el-input>
                 </el-form-item>
@@ -170,6 +181,8 @@
     // import DeptApi from '../../api/sysdept';
     import * as SysUserApi from '../../api/sysuser';
     import * as SysRoleApi from '../../api/sysrole';
+    import {sysUserUploadUrl} from '@/api/file-upload';
+    import {imageUri} from '@/api/base/request-util';
 
     export default {
         name: 'basetable',
@@ -206,6 +219,12 @@
                 roleIds:[]
               },
 
+              // upload
+              uploadUrl: sysUserUploadUrl,
+              uploadHeaders: {},
+              // 正在上传的对象
+              uploadingObject: {},
+
             }
         },
         created() {
@@ -225,9 +244,13 @@
               const ret = await SysUserApi.listUser(param);
               if (ret.code === '2000') {
                 this.tableData = ret.data;
+                console.log(this.tableData)
+                console.log(this.tableData.avatar)
                 this.tableData.forEach(item => {
-                    item.status = Boolean(item.status)
+                    item.status = Boolean(item.status);
+                  item.avatar = imageUri + '/' + item.avatar;
                 })
+                console.log(this.tableData)
                 this.pagination = ret.pagination;
               }
             },
@@ -370,14 +393,20 @@
             handleAvatarSuccess(res, file) {
                 console.log(res);
                 console.log(file);
-                if (res.error === false) {
-                    // this.form.avatar = res.data;
-                    this.$set(this.form, "avatar", res.data);
-                    console.log(this.form);
-
-                } else {
-                    this.$message.error(res.msg);
-                }
+              this.uploadingObject.imageUrl = URL.createObjectURL(file.raw);
+              if (res.code === '2000') {
+                this.uploadingObject.imageId = res.data[0].imageId;
+              }
+              // 使用对象的视图更新方式，让vue重新渲染视图
+              this.$set(this.uploadingObject, 'for-update-' + new Date().getTime(), 1);
+                // if (res.error === false) {
+                //     // this.form.avatar = res.data;
+                //     this.$set(this.form, "avatar", res.data);
+                //     console.log(this.form);
+                //
+                // } else {
+                //     this.$message.error(res.msg);
+                // }
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
