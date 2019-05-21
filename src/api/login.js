@@ -1,6 +1,6 @@
 import {get, post} from './base/request-util'
 
-export const login = ({name,password,sysUser}) => post('/sysUser/login', {name,password,sysUser});
+export const login = ({name,password,sysUser}) => post('/login', {name,password,sysUser});
 // import http from '@/util/http'
 // export default {
 //     // 登录

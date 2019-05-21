@@ -58,8 +58,13 @@
               this.$alert(ret.error)
             } else {
               const res = {};
-              // res.id = ret.data.id;
-              // res.name = ret.data.name;
+              res.token = "aa";
+              res.id = 1;
+              res.name = "admin";
+              res.sessionId = ret.data.sessionId;
+              sessionStorage.setItem("sessionId", ret.data.sessionId);
+              console.log(sessionStorage.getItem("sessionId"));
+              // this.login(res);
               this.$router.push({path: '/home'});
             }
 

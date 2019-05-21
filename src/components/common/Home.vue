@@ -20,6 +20,8 @@
     import vSidebar from './Sidebar.vue';
     import vTags from './Tags.vue';
     import bus from './bus';
+    import {mapGetters} from 'vuex';
+
     export default {
         data(){
             return {
@@ -28,9 +30,14 @@
             }
         },
         components:{
-            vHead, vSidebar , vTags
+            vHead, vSidebar , vTags,
+            ...mapGetters(['getSession']),
+          ...mapGetters(['getToken']),
         },
         created(){
+            console.log("getsession");
+            console.log(this.sessionId)
+             console.log(this.token)
             bus.$on('collapse', msg => {
                 this.collapse = msg;
             })

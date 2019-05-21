@@ -12,7 +12,19 @@ import "babel-polyfill";
 
 
 Vue.use(ElementUI, { size: 'small' });
+
+axios.defaults.withCredentials=true;
 Vue.prototype.$axios = axios;
+// Vue.http.options.xhr = { withCredentials: true };
+// Vue.http.options.emulateJSON = true;
+// Vue.http.interceptors.push((request, next) => {
+//
+//   request.credentials = true;
+//
+//   next();
+//
+// });
+
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {

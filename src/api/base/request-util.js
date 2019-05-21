@@ -29,6 +29,10 @@ function assembleTokenHeader() {
     if (!!token) {
         headers['Token'] = token;
     }
+    const sessionId = store.getters.getSession;
+    if (!!sessionId) {
+      headers['Token'] = sessionId;
+    }
     return headers;
 }
 
@@ -46,6 +50,7 @@ export const get = (uri) => {
         method: 'get',
         url: uri,
         headers: {...assembleTokenHeader()},
+        xhrFields:{withCredentials:true}
     }).then(response => {
         if (response.status === 200) {
             if (response.headers && response.headers['token']) {
@@ -94,6 +99,7 @@ export const post = (uri, body) => {
         method: 'post',
         url: uri,
         headers: {...assembleTokenHeader()},
+        xhrFields:{withCredentials:true},
         data: body
     }).then(response => {
         if (response.status === 200) {

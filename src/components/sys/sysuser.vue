@@ -183,6 +183,7 @@
     import * as SysRoleApi from '../../api/sysrole';
     import {sysUserUploadUrl} from '@/api/file-upload';
     import {imageUri} from '@/api/base/request-util';
+    import {mapGetters} from 'vuex';
 
     export default {
         name: 'basetable',
@@ -230,7 +231,10 @@
         created() {
           this.initData();
         },
-        computed: {},
+        computed: {
+          ...mapGetters(['getSession']),
+          ...mapGetters(['getToken']),
+        },
         methods: {
           handleCurrentChange(current) {
             this.pagination.pageNum = current;
@@ -345,6 +349,10 @@
             },
             search() {
               console.log(this.req)
+              console.log("getsession");
+              console.log(this.sessionId)
+              console.log(this.token)
+              console.log(sessionStorage.getItem("sessionId"));
               this.initData();
   //                this.is_search = true;
               // this.getData();
