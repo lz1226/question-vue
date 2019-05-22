@@ -27,8 +27,8 @@
                                 label="用户头像"
                                 min-width="120"
                                 align="center">
-                                <template v-if="scope.row.avatar" slot-scope="scope">
-                                    <img :src="scope.row.avatar" style="width: 100px;height: 100px"/>
+                                <template v-if="scope.row.headImage" slot-scope="scope">
+                                    <img :src="scope.row.headImage" style="width: 100px;height: 100px"/>
                                 </template>
                             </el-table-column>
                             <el-table-column prop="account" align="center" label="账号">
@@ -246,18 +246,19 @@
           },
             async initData() {
               const param = {...this.pagination};
-              console.log(param)
               param.account = this.req.account;
               param.name = this.req.name;
               const ret = await SysUserApi.listUser(param);
               if (ret.code === '2000') {
                 this.tableData = ret.data;
-                console.log(this.tableData)
-                console.log(this.tableData.avatar)
                 this.tableData.forEach(item => {
                     item.status = Boolean(item.status);
                   item.avatar = imageUri + '/' + item.avatar;
+                  console.log("列表");
+                  console.log(item)
+                  console.log(item.headImage)
                   item.headImage = imageUri + '/' + item.headImage;
+
                 })
                 console.log(this.tableData)
                 this.pagination = ret.pagination;
