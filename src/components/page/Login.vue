@@ -34,7 +34,7 @@
             return {
                 loading:false,
                 ruleForm: {
-                    name: 'test',
+                    name: 'admin',
                     password: '123456'
                 },
                 rules: {

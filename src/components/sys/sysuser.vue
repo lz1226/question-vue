@@ -109,16 +109,20 @@
                     <!--<img v-if="form.avatar" :src="form.avatar" class="avatar" key="1"/>-->
                     <!--<i v-else class="el-icon-plus avatar-uploader-icon" key="2"></i>-->
                 <!--</el-upload>-->
+              <!-- :action="uploadUrl"-->
               <el-upload
                 label=" 头像"
-                class="avatar-uploader el-dialog--center"
                 name="files"
-                :headers="uploadHeaders"
+                class="avatar-uploader el-dialog--center"
                 :action="uploadUrl"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess">
-                <img v-if="form.avatar" :src="form.avatar" class="avatar" key="1"/>
-                <i v-else class="el-icon-plus avatar-uploader-icon" key="2"></i>
+                <img v-if="headImage && headImage.imageUrl" :src="headImage.imageUrl"
+                     @click="pickImage(headImage)"
+                     class="avatar" key="1"/>
+                <i v-else class="el-icon-plus avatar-uploader-icon"
+                   @click="pickImage(headImage)"
+                   key="2"></i>
               </el-upload>
                 <el-form-item label="账号">
                     <el-input :disabled="accountInput" v-model="form.account"></el-input>
@@ -225,6 +229,8 @@
               uploadHeaders: {},
               // 正在上传的对象
               uploadingObject: {},
+              //头像
+              headImage: {imageId: 0, imageUrl: ''},
 
             }
         },
@@ -232,8 +238,6 @@
           this.initData();
         },
         computed: {
-          ...mapGetters(['getSession']),
-          ...mapGetters(['getToken']),
         },
         methods: {
           handleCurrentChange(current) {
@@ -253,6 +257,7 @@
                 this.tableData.forEach(item => {
                     item.status = Boolean(item.status);
                   item.avatar = imageUri + '/' + item.avatar;
+                  item.headImage = imageUri + '/' + item.headImage;
                 })
                 console.log(this.tableData)
                 this.pagination = ret.pagination;
@@ -261,8 +266,13 @@
           async handleEdit(index, row) {
             //通过用户的id得到用户的信息
            const ret = await SysUserApi.findUser(row.id);
+           console.log("edit")
+           console.log(row.id)
+           console.log(ret.data)
            if(ret.code === "2000"){
               this.form = ret.data;
+             this.headImage.imageId = ret.data.headImageId;
+             this.headImage.imageUrl = imageUri + '/' + ret.data.headImage;
               this.form.status = Boolean(this.form.status);
            }
             this.getRoleList();
@@ -285,12 +295,16 @@
             }else{
               this.form.status = 2;
             }
+            //判断上传的头像信息
+            this.form.headImageId = this.headImage.imageId;
             const sysUser = this.form;
             const roleIds = this.form.roleIds
             const param = {
               sysUser,
               roleIds
             }
+            console.log("编辑")
+            console.log(param)
             const ret = await SysUserApi.editUser(param);
             console.log(ret.data)
             if(ret.code === "2000"){
@@ -348,11 +362,6 @@
               this.delVisible = false;
             },
             search() {
-              console.log(this.req)
-              console.log("getsession");
-              console.log(this.sessionId)
-              console.log(this.token)
-              console.log(sessionStorage.getItem("sessionId"));
               this.initData();
   //                this.is_search = true;
               // this.getData();
@@ -398,6 +407,10 @@
 //
 //                return deptId;
 //            },
+          pickImage(uploadingObject) {
+            this.uploadingObject = {};
+            this.uploadingObject = uploadingObject;
+          },
             handleAvatarSuccess(res, file) {
                 console.log(res);
                 console.log(file);
