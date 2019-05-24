@@ -254,9 +254,6 @@
                 this.tableData.forEach(item => {
                     item.status = Boolean(item.status);
                   item.avatar = imageUri + '/' + item.avatar;
-                  console.log("列表");
-                  console.log(item)
-                  console.log(item.headImage)
                   item.headImage = imageUri + '/' + item.headImage;
 
                 })

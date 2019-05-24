@@ -65,6 +65,16 @@ export default new Router({
           component: resolve => require(['../components/sys/sysuser.vue'], resolve),
           meta: { title: '用户管理' }
         },
+        {
+          path: '/sysrole',
+          component: resolve => require(['../components/sys/sysrole.vue'], resolve),
+          meta: { title: '角色管理' }
+        },
+        {
+          path: '/sysmenu',
+          component: resolve => require(['../components/sys/sysmenu.vue'], resolve),
+          meta: { title: '菜单管理' }
+        }
       ]
     },
     {

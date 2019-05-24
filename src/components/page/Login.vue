@@ -50,21 +50,14 @@
         methods: {
           ...mapActions(['login']),
           async doLogin(param) {
-            console.log("参数")
-            console.log(param)
             const ret = await loginApi.login(param);
             console.log(ret.data)
             if (ret.code !== '2000') {
               this.$alert(ret.error)
             } else {
               const res = {};
-              res.token = "aa";
-              res.id = 1;
-              res.name = "admin";
               res.sessionId = ret.data.sessionId;
               sessionStorage.setItem("sessionId", ret.data.sessionId);
-              console.log(sessionStorage.getItem("sessionId"));
-              // this.login(res);
               this.$router.push({path: '/home'});
             }
 
