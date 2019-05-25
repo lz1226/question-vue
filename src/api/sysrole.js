@@ -28,6 +28,13 @@ export const batchDelete = (ids) => post('/sysRole/batchDelete',ids);
  */
 export const getMenuTreeData = (params) => get('/sysMenu/tree/menu',params);
 
+/**
+ * 保存角色的权限
+ */
+export const saveMuenPerms = (params) => post('/sysRole/save/menuRole',params);
+
+export const getCheckMenuData = (roleId) => get(`/sysRole/menu/list/${roleId}`);
+
 // import http from '@/util/http'
 //
 //

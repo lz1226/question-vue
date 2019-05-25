@@ -257,16 +257,12 @@
                   item.headImage = imageUri + '/' + item.headImage;
 
                 })
-                console.log(this.tableData)
                 this.pagination = ret.pagination;
               }
             },
           async handleEdit(index, row) {
             //通过用户的id得到用户的信息
            const ret = await SysUserApi.findUser(row.id);
-           console.log("edit")
-           console.log(row.id)
-           console.log(ret.data)
            if(ret.code === "2000"){
               this.form = ret.data;
              this.headImage.imageId = ret.data.headImageId;
@@ -286,8 +282,6 @@
           // 保存编辑
           async saveEdit() {
             this.$set(this.tableData, this.idx, this.form);
-            console.log("信息")
-            console.log(this.form)
             if(this.form.status == true){
               this.form.status = 1;
             }else{
@@ -301,10 +295,7 @@
               sysUser,
               roleIds
             }
-            console.log("编辑")
-            console.log(param)
             const ret = await SysUserApi.editUser(param);
-            console.log(ret.data)
             if(ret.code === "2000"){
               this.editVisible = false;
               this.initData();
@@ -315,7 +306,6 @@
            async changeStatus(id, flag) {
               const status = !flag ? 0 : 1;
               const ret = await SysUserApi.changeStatus(id,status);
-              console.log(ret)
               if(ret.code === "2000"){
                 this.$message.success('操作成功');
               }else{
@@ -350,7 +340,6 @@
             },
             // 确定删除
             async deleteRow() {
-              console.log(this.ids)
               const ids = this.ids;
               const ret = await SysUserApi.batchDelete(ids);
               if(ret.code === "2000"){
@@ -410,8 +399,6 @@
             this.uploadingObject = uploadingObject;
           },
             handleAvatarSuccess(res, file) {
-                console.log(res);
-                console.log(file);
               this.uploadingObject.imageUrl = URL.createObjectURL(file.raw);
               if (res.code === '2000') {
                 this.uploadingObject.imageId = res.data[0].imageId;
