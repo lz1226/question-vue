@@ -11,6 +11,15 @@ export const save = (params) => get('/sysMenu/save',params);
  */
 export const findMenu = (id) => get(`/sysMenu/find/${id}`);
 
+/**
+ * 编辑菜单信息
+ */
+export const editMenu = (sysMenu) => post('/sysMenu/edit',sysMenu);
+/**
+ * 添加菜单信息
+ */
+export const createMenu = (sysMenu) => post('/sysMenu/create',sysMenu);
+
 // import http from '@/util/http'
 //
 //

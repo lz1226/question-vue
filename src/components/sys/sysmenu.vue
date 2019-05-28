@@ -193,10 +193,6 @@
                     {
                         text: '排序',
                         value: 'orderNum'
-                    },
-                    {
-                      text: 'id',
-                      value: 'id'
                     }
                 ],
                 defaultProps: {
@@ -212,26 +208,71 @@
         methods: {
           async getTreeData() {
             const ret = await  MenuApi.getTreeData();
-            console.log("this.treeData")
-            console.log(ret.data);
             if(ret.code === "2000"){
               this.treeData = ret.data;
-              console.log(this.treeData)
-//                     this.wrapMenuType(this.treeData);
+              this.wrapMenuType(this.treeData);
             }else{
               this.$message.error("数据不存在!");
             }
           },
-
+          //编辑
+          async handleEdit(index, row) {
+               this.menu.delFlag = 0;
+              const ret = await MenuApi.findMenu(row.id);
+              if(ret.code === "2000"){
+                this.menu = ret.data;
+              }else{
+                this.loading = false;
+                this.$message.error("失败!");
+              }
+               this.editVisible = true;
+          },
+          handleAdd() {
+               this.menu = {};
+               this.menu.delFlag = 0;
+               this.editVisible = true;
+          },
             goToSelectMenu(){
-//                this.selectMenuDialog = true;
+               this.selectMenuDialog = true;
             },
             selectMenuClick(data){
-//                this.selectMenuDialog = false;
-//                this.menu.parentId=data.id;
-//                this.menu.pname=data.name;
+               this.selectMenuDialog = false;
+               this.menu.parentId=data.id;
+               this.menu.pname=data.name;
             },
+          // 保存编辑
+          saveEdit() {
 
+//                 this.$set(this.tableData, this.idx, this.menu);
+            console.log(this.menu)
+            console.log(this.idx)
+            console.log(this.tableData)
+            const sysMenu = this.menu;
+            //编辑
+            if(sysMenu.id > 0){
+              MenuApi.editMenu(sysMenu);
+            }else {
+              //添加信息
+              MenuApi.createMenu(sysMenu);
+            };
+            this.editVisible = false;
+            this.getTreeData();
+//                this.loading = true
+//                MenuApi.save(this.menu).then((res) => {
+//                    this.loading = false
+//                    if (res.error === false) {
+//                        this.editVisible = false
+//                        this.$message.success(res.msg);
+//                        this.reload()
+//                    } else {
+//                        this.$message.error(res.msg);
+//                    }
+//                }, (err) => {
+//                    this.loading = false
+//                    this.$message.error(err.msg);
+//                })
+
+          },
 
 
 //            reload() {
@@ -244,22 +285,8 @@
 //                this.getTreeData();
             },
 
-            handleAdd() {
-//                this.menu = {};
-//                this.menu.delFlag = 0;
-//                this.editVisible = true;
-            },
-           async handleEdit(index, row) {
-//                this.menu.delFlag = 0;
-//               const ret = await MenuApi.findMenu(row.id);
-//               if(ret.data === "2000"){
-//                 this.menu = ret.data;
-//               }else{
-//                 this.loading = false;
-//                 this.$message.error("失败!");
-//               }
-//                this.editVisible = true;
-            },
+
+
             handleDelete(index, row) {
 //                this.ids = [row.id];
 //                this.delVisible = true;
@@ -276,29 +303,7 @@
 //            handleSelectionChange(val) {
 //                this.multipleSelection = val;
 //            },
-            // 保存编辑
-            saveEdit() {
 
-//                 this.$set(this.tableData, this.idx, this.menu);
-//              console.log(this.menu)
-//              console.log(this.idx)
-//              console.log(this.tableData)
-//                this.loading = true
-//                MenuApi.save(this.menu).then((res) => {
-//                    this.loading = false
-//                    if (res.error === false) {
-//                        this.editVisible = false
-//                        this.$message.success(res.msg);
-//                        this.reload()
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false
-//                    this.$message.error(err.msg);
-//                })
-
-            },
             // 确定删除
             deleteRow() {
 //                MenuApi.batchDelete(this.ids).then((res) => {
@@ -315,12 +320,12 @@
                 this.delVisible = false;
             },
             wrapMenuType(treeData){
-//                treeData.forEach(item=>{
-//                    item.typeName = this.menuType[item.type].name;
-//                    if(item.children){
-//                        this.wrapMenuType(item.children);
-//                    }
-//                })
+               treeData.forEach(item=>{
+                   item.typeName = this.menuType[item.type].name;
+                   if(item.children){
+                       this.wrapMenuType(item.children);
+                   }
+               })
 
             }
 
