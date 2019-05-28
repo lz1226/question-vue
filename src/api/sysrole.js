@@ -2,6 +2,8 @@ import {get, post} from './base/request-util'
 
 /**
  * 获取用户角色信息
+ * 那个初始方法调用的是这个
+ * post
  */
 export const listRole = ({pageNum, pageSize,roleName}) => post('/sysRole/list',{pageNum, pageSize,roleName});
 
@@ -27,6 +29,13 @@ export const batchDelete = (ids) => post('/sysRole/batchDelete',ids);
  * 得到属性菜单的数据
  */
 export const getMenuTreeData = (params) => get('/sysMenu/tree/menu',params);
+
+/**
+ * 保存角色的权限
+ */
+export const saveMuenPerms = (params) => post('/sysRole/save/menuRole',params);
+
+export const getCheckMenuData = (roleId) => get(`/sysRole/menu/list/${roleId}`);
 
 // import http from '@/util/http'
 //

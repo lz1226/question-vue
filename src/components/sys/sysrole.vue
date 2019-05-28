@@ -14,7 +14,8 @@
                 <el-button type="danger" icon="delete" class="handle-del mr10" @click="delAll">批量删除</el-button>
                 <el-button type="primary" icon="add" class="handle-del mr10" @click="handleAdd">新增</el-button>
             </div>
-            <el-table :data="tableData" v-loading="loading" border class="table" ref="multipleTable"
+          <!-- v-loading="loading"-->
+            <el-table :data="tableData" border class="table" ref="multipleTable"
                       @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
 
@@ -91,9 +92,9 @@
               <!-- :loading="loading"-->
             </span>
         </el-dialog>
-        <!-- 编辑弹出框 -->
+        <!-- 编辑弹出框  check-strictly="true"   v-loading="loading"-->
         <el-dialog title="配置菜单" :modal="false" :visible.sync="configMenuDialog" width="30%">
-            <el-tree check-strictly="true" v-loading="loading" show-checkbox node-key="id" :data="menuTreeData" :default-checked-keys="checkMenuData" :props="defaultProps"  ref="treeMenu" default-expand-all :expand-on-click-node="false" ></el-tree>
+            <el-tree show-checkbox node-key="id" :data="menuTreeData" :default-checked-keys="checkMenuData" :props="defaultProps"  ref="treeMenu" default-expand-all :expand-on-click-node="false" ></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="configMenuDialog = false">取 消</el-button>
                 <el-button type="primary" @click="saveMuenPerms">确 定</el-button>
@@ -112,7 +113,7 @@
 
 <script>
 //    import RoleApi from '../../api/sysrole';
-      import * as RoleApi from '../../api/sysrole';
+      import * as RoleApi from '../../api/sysrole';//这儿调用连接后台的js
 
     export default {
         name: 'basetable',
@@ -131,7 +132,7 @@
                 ids: [],
                 req: {},
                 accountInput: true,
-                loading: false,
+                // loading: false,
                 menuTreeData: [],
                 defaultProps: {
                     children: 'children',
@@ -143,7 +144,7 @@
         },
         created() {
 //            this.getData();
-          this.initData();
+          this.initData();//在这儿调用初始时显示值
         },
         computed: {},
         methods: {
@@ -152,13 +153,18 @@
             this.initData();
           },
           async initData() {
+          //这个是初始方法，
               const param = {...this.pagination};
               console.log(this.req.roleName);
               param.roleName = this.req.roleName;
-              const ret = await RoleApi.listRole(param);
+              const ret = await RoleApi.listRole(param);//这个是连接后台的controller
               console.log(ret.data)
               if(ret.code == "2000"){
                 this.tableData = ret.data ? ret.data : [];
+                this.tableData.forEach(item => {
+                  item.status = Boolean(item.status);
+
+                })
                 this.pagination = ret.pagination;
               }else{
                 this.$message.error("没有数据信息")
@@ -219,7 +225,7 @@
             this.initData();
           },
           handleConfigPerms(index, row) {
-            this.loading=true;
+            // this.loading=true;
             this.roleId = row.id;
             this.checkMenuData=[];
             this.menuTreeData=[];
@@ -230,132 +236,38 @@
 
           },
          async getMenuTreeData() {
+           // this.loading = false;
            const ret = await RoleApi.getMenuTreeData();
            console.log("授权")
            console.log(ret.data)
            if(ret.code === "2000"){
              this.menuTreeData = ret.data;
            }
-//                RoleApi.getMenuTreeData().then((res) => {
-//                    if (res.error === false) {
-//                        this.menuTreeData = res.data;
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false;
-//                    this.$message.error(err.msg);
-//                });
           },
-          getCheckMenuData(roleId) {
-//                RoleApi.getCheckMenuData({roleId:roleId}).then((res) => {
-//                    if (res.error === false) {
-//                        this.checkMenuData = res.data;
-//                        this.loading = false;
-//
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false;
-//                    this.$message.error(err.msg);
-//                });
+          async getCheckMenuData(roleId) {
+           const ret = await RoleApi.getCheckMenuData(roleId);
+           if(ret.code === "2000"){
+             this.checkMenuData = ret.data;
+           };
           },
-
-
-
-
-
-
-
-            saveMuenPerms(){
+           async saveMuenPerms(){
+            console.log("this.checkMenuData ")
                 this.checkMenuData = [];
                 this.checkMenuData = this.checkMenuData.concat(this.$refs.treeMenu.getCheckedKeys());
-                this.checkMenuData = this.checkMenuData.concat(this.$refs.treeMenu.getHalfCheckedKeys());
-//                RoleApi.saveMuenPerms({id:this.roleId,menuIds:this.checkMenuData}).then((res) => {
-//                    this.configMenuDialog = false;
-//                    this.checkMenuData = [];
-//                    if (res.error === false) {
-//                        this.$message.success(res.msg);
-//                        this.reload();
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.checkMenuData = [];
-//                    this.loading = false;
-//                    this.$message.error(err.msg);
-//                });
+                const params ={id:this.roleId,menuIds:this.checkMenuData}
+                const ret = await RoleApi.saveMuenPerms(params);
+                if(ret.code === "2000"){
+                    console.log(ret.data);
+                    this.initData();
+                  this.$message.success("授权成功！");
+                }else{
+                  this.$message.success("授权失败！");
+                }
+                this.configMenuDialog = false;
             },
-
-//            handleCurrentChange(val) {
-//                this.page.pageNo = val;
-//                this.getData();
-//            },
-//            changePageSize(value) { // 修改每页条数size
-//                this.page.pageNo = 1
-//                this.page.pageSize = value
-//                this.tableData = null
-//                this.getData()
-//            },
-            reload() {
-                this.page.pageNo = 1
-                this.getData()
-            },
-            getData() {
-
-                this.req.currentPage = this.page.pageNo
-                this.req.pageSize = this.page.pageSize
-//                RoleApi.getData(this.req).then((res) => {
-//                    this.loading = false;
-//                    if (res.error === false) {
-//                        this.tableData = res.data.records ? res.data.records : []
-//                        this.page.pageNo = parseInt(res.data.current)
-//                        this.page.totalRows = parseInt(res.data.total)
-//                        this.tableData.forEach(item => {
-//                            item.status = Boolean(item.status)
-//                        })
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false;
-//                    this.$message.error(err.msg);
-//                });
-            },
-
-
-//            search() {
-//                this.is_search = true;
-//                this.getData();
-//            },
-
-
-
-
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
-            // 保存编辑
-//            saveEdit() {
-                // this.$set(this.tableData, this.idx, this.role);
-//                this.loading = true
-//                RoleApi.save(this.role).then((res) => {
-//                    this.loading = false
-//                    if (res.error === false) {
-//                        this.editVisible = false
-//                        this.$message.success(res.msg);
-//                        this.reload()
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false
-//                    this.$message.error(err.msg);
-//                })
-
-//            },
-
 
         }
     }
