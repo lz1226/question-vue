@@ -209,15 +209,27 @@
         created() {
             this.getTreeData();
         },
-        computed: {},
         methods: {
+          async getTreeData() {
+            const ret = await  MenuApi.getTreeData();
+            console.log("this.treeData")
+            console.log(ret.data);
+            if(ret.code === "2000"){
+              this.treeData = ret.data;
+              console.log(this.treeData)
+//                     this.wrapMenuType(this.treeData);
+            }else{
+              this.$message.error("数据不存在!");
+            }
+          },
+
             goToSelectMenu(){
-                this.selectMenuDialog = true;
+//                this.selectMenuDialog = true;
             },
             selectMenuClick(data){
-                this.selectMenuDialog = false;
-                this.menu.parentId=data.id;
-                this.menu.pname=data.name;
+//                this.selectMenuDialog = false;
+//                this.menu.parentId=data.id;
+//                this.menu.pname=data.name;
             },
 
 
@@ -226,50 +238,39 @@
 //                this.page.pageNo = 1
 //                this.getTreeData()
 //            },
-            async getTreeData() {
-                  const ret = await  MenuApi.getTreeData();
-                  console.log("this.treeData")
-                  console.log(ret.data);
-                   if(ret.code === "2000"){
-                     this.treeData = ret.data;
-                     console.log(this.treeData)
-//                     this.wrapMenuType(this.treeData);
-                   }else{
-                     this.$message.error("数据不存在!");
-                   }
-            },
+
             search() {
-                this.is_search = true;
+//                this.is_search = true;
 //                this.getTreeData();
             },
 
             handleAdd() {
-                this.menu = {};
-                this.menu.delFlag = 0;
-                this.editVisible = true;
+//                this.menu = {};
+//                this.menu.delFlag = 0;
+//                this.editVisible = true;
             },
            async handleEdit(index, row) {
-                this.menu.delFlag = 0;
-               const ret = await MenuApi.findMenu(row.id);
-               if(ret.data === "2000"){
-                 this.menu = ret.data;
-               }else{
-                 this.loading = false;
-                 this.$message.error("失败!");
-               }
-                this.editVisible = true;
+//                this.menu.delFlag = 0;
+//               const ret = await MenuApi.findMenu(row.id);
+//               if(ret.data === "2000"){
+//                 this.menu = ret.data;
+//               }else{
+//                 this.loading = false;
+//                 this.$message.error("失败!");
+//               }
+//                this.editVisible = true;
             },
             handleDelete(index, row) {
-                this.ids = [row.id];
-                this.delVisible = true;
+//                this.ids = [row.id];
+//                this.delVisible = true;
             },
             delAll() {
-                this.delVisible = true;
-                this.ids = [];
-                const length = this.multipleSelection.length;
-                for (let i = 0; i < length; i++) {
-                    this.ids.push(this.multipleSelection[i].id);
-                }
+//                this.delVisible = true;
+//                this.ids = [];
+//                const length = this.multipleSelection.length;
+//                for (let i = 0; i < length; i++) {
+//                    this.ids.push(this.multipleSelection[i].id);
+//                }
 
             },
 //            handleSelectionChange(val) {
@@ -279,9 +280,9 @@
             saveEdit() {
 
 //                 this.$set(this.tableData, this.idx, this.menu);
-              console.log(this.menu)
-              console.log(this.idx)
-              console.log(this.tableData)
+//              console.log(this.menu)
+//              console.log(this.idx)
+//              console.log(this.tableData)
 //                this.loading = true
 //                MenuApi.save(this.menu).then((res) => {
 //                    this.loading = false
@@ -314,12 +315,12 @@
                 this.delVisible = false;
             },
             wrapMenuType(treeData){
-                treeData.forEach(item=>{
-                    item.typeName = this.menuType[item.type].name;
-                    if(item.children){
-                        this.wrapMenuType(item.children);
-                    }
-                })
+//                treeData.forEach(item=>{
+//                    item.typeName = this.menuType[item.type].name;
+//                    if(item.children){
+//                        this.wrapMenuType(item.children);
+//                    }
+//                })
 
             }
 

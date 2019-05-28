@@ -1,4 +1,5 @@
 <template>
+  <!-- row-key="id"-->
   <el-table :data="formatData" row-key="id" :row-style="showRow" v-bind="$attrs">
     <el-table-column align="center" v-if="columns.length===0" width="150">
       <template slot-scope="scope">
@@ -56,9 +57,12 @@ export default {
     formatData: function() {
       let tmp
       if (!Array.isArray(this.data)) {
+        console.log("非数组")
         tmp = [this.data]
       } else {
+        console.log("数组")
         tmp = this.data
+        console.log(tmp)
       }
       const func = this.evalFunc || treeToArray
       const args = this.evalArgs ? Array.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll]
@@ -67,6 +71,8 @@ export default {
   },
   methods: {
     showRow: function(row) {
+      console.log("行的数据")
+      console.log(row)
       const show = (row.row.parent ? (row.row.parent._expanded && row.row.parent._show) : true)
       row.row._show = show
       return show ? 'animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s;' : 'display:none;'
