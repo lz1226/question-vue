@@ -20,6 +20,11 @@ export const editMenu = (sysMenu) => post('/sysMenu/edit',sysMenu);
  */
 export const createMenu = (sysMenu) => post('/sysMenu/create',sysMenu);
 
+/**
+ * 批量删除菜单信息
+ */
+export const batchDelete = (ids) => post('/sysMenu/batchDelete',ids);
+
 // import http from '@/util/http'
 //
 //
