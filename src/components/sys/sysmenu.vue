@@ -59,7 +59,7 @@
                     </template>
                 </el-table-column>
             </el-table>-->
-            <tree-table :data="treeData" :columns="columns" expandAll="true" border>
+            <tree-table :data="treeData" :columns="columns" :expandAll="true" border>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑
@@ -126,7 +126,7 @@
         </el-dialog>
         <!-- 编辑弹出框 -->
         <el-dialog title="选择父级菜单" :modal="false" :visible.sync="selectMenuDialog" width="30%">
-            <el-tree :data="treeData" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="selectMenuClick"></el-tree>
+            <el-tree :data="treeData" row-key="id" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="selectMenuClick"></el-tree>
         </el-dialog>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
@@ -146,7 +146,7 @@
 
     export default {
         name: 'basetable',
-//        components: { treeTable },
+        components: { treeTable },
         data() {
             return {
                 selectMenuDialog:false,
@@ -160,7 +160,7 @@
                 menu: {},
                 idx: -1,
                 ids: [],
-                req: {},
+                req: {name:''},
                 accountInput: true,
                 loading: false,
                 menuType:[
@@ -193,6 +193,10 @@
                     {
                         text: '排序',
                         value: 'orderNum'
+                    },
+                    {
+                      text: 'id',
+                      value: 'id'
                     }
                 ],
                 defaultProps: {
@@ -205,88 +209,81 @@
         created() {
             this.getTreeData();
         },
-        computed: {},
         methods: {
+          async getTreeData() {
+            const ret = await  MenuApi.getTreeData();
+            console.log("this.treeData")
+            console.log(ret.data);
+            if(ret.code === "2000"){
+              this.treeData = ret.data;
+              console.log(this.treeData)
+//                     this.wrapMenuType(this.treeData);
+            }else{
+              this.$message.error("数据不存在!");
+            }
+          },
+
             goToSelectMenu(){
-                this.selectMenuDialog = true;
+//                this.selectMenuDialog = true;
             },
             selectMenuClick(data){
-                this.selectMenuDialog = false;
-                this.menu.parentId=data.id;
-                this.menu.pname=data.name;
+//                this.selectMenuDialog = false;
+//                this.menu.parentId=data.id;
+//                this.menu.pname=data.name;
             },
 
 
 
-            reload() {
-                this.page.pageNo = 1
-                this.getTreeData()
-            },
-            getTreeData() {
-//                MenuApi.getTreeData(this.req).then((res) => {
-//                    this.loading = false;
-//                    if (res.error === false) {
-//                        this.treeData = res.data;
-//                        this.wrapMenuType(this.treeData);
-//
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false;
-//                    this.$message.error(err.msg);
-//                });
-            },
+//            reload() {
+//                this.page.pageNo = 1
+//                this.getTreeData()
+//            },
+
             search() {
-                this.is_search = true;
-                this.getTreeData();
+//                this.is_search = true;
+//                this.getTreeData();
             },
 
             handleAdd() {
-                this.menu = {};
-                this.menu.delFlag = 0;
-                this.editVisible = true;
+//                this.menu = {};
+//                this.menu.delFlag = 0;
+//                this.editVisible = true;
             },
-            handleEdit(index, row) {
-                this.menu.delFlag = 0;
-
-//                MenuApi.info({menuId:row.id}).then((res) => {
-//
-//                    if (res.error === false) {
-//                        this.menu = res.data;
-//
-//                        console.log(this.menu);
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false;
-//                    this.$message.error(err.msg);
-//                });
-                this.editVisible = true;
-
-
+           async handleEdit(index, row) {
+//                this.menu.delFlag = 0;
+//               const ret = await MenuApi.findMenu(row.id);
+//               if(ret.data === "2000"){
+//                 this.menu = ret.data;
+//               }else{
+//                 this.loading = false;
+//                 this.$message.error("失败!");
+//               }
+//                this.editVisible = true;
             },
             handleDelete(index, row) {
-                this.ids = [row.id];
-                this.delVisible = true;
+//                this.ids = [row.id];
+//                this.delVisible = true;
             },
             delAll() {
-                this.delVisible = true;
-                this.ids = [];
-                const length = this.multipleSelection.length;
-                for (let i = 0; i < length; i++) {
-                    this.ids.push(this.multipleSelection[i].id);
-                }
+//                this.delVisible = true;
+//                this.ids = [];
+//                const length = this.multipleSelection.length;
+//                for (let i = 0; i < length; i++) {
+//                    this.ids.push(this.multipleSelection[i].id);
+//                }
 
             },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
+//            handleSelectionChange(val) {
+//                this.multipleSelection = val;
+//            },
             // 保存编辑
             saveEdit() {
-                // this.$set(this.tableData, this.idx, this.menu);
-                this.loading = true
+
+//                 this.$set(this.tableData, this.idx, this.menu);
+//              console.log(this.menu)
+//              console.log(this.idx)
+//              console.log(this.tableData)
+//                this.loading = true
 //                MenuApi.save(this.menu).then((res) => {
 //                    this.loading = false
 //                    if (res.error === false) {
@@ -318,12 +315,12 @@
                 this.delVisible = false;
             },
             wrapMenuType(treeData){
-                treeData.forEach(item=>{
-                    item.typeName = this.menuType[item.type].name;
-                    if(item.children){
-                        this.wrapMenuType(item.children);
-                    }
-                })
+//                treeData.forEach(item=>{
+//                    item.typeName = this.menuType[item.type].name;
+//                    if(item.children){
+//                        this.wrapMenuType(item.children);
+//                    }
+//                })
 
             }
 

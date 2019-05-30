@@ -1,5 +1,6 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs">
+  <!-- row-key="id"-->
+  <el-table :data="formatData" row-key="id" :row-style="showRow" v-bind="$attrs">
     <el-table-column align="center" v-if="columns.length===0" width="150">
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
@@ -10,6 +11,19 @@
         {{ scope.$index }}
       </template>
     </el-table-column>
+
+    <!--<el-table-column v-for="(column, index) in columns" :key="column.dataIndex" :label="column.text" :min-width="firstWidth(index)" show-overflow-tooltip :align="firstAlign(index)">-->
+      <!--<template slot-scope="scope">-->
+        <!--<span v-if="spaceIconShow(index)" v-for="(space, levelIndex) in scope.row._level" class="ms-tree-space" :key="levelIndex"></span>-->
+        <!--<span class="button" v-if="toggleIconShow(index,scope.row)" @click="toggle(scope.$index)">-->
+                <!--<i v-if="!scope.row._expanded" class="el-icon-remove" aria-hidden="true"></i>-->
+                <!--<i v-if="scope.row._expanded" class="el-icon-circle-plus" aria-hidden="true"></i>-->
+          <!--</span>-->
+        <!--<span v-else-if="index===0" class="ms-tree-space"></span>-->
+        <!--{{scope.row[column.dataIndex]}}-->
+      <!--</template>-->
+    <!--</el-table-column>-->
+
     <el-table-column align="center" v-for="(column, index) in columns" v-else :key="column.value" :label="column.text" :width="column.width">
       <template slot-scope="scope">
         <!-- Todo -->
@@ -56,13 +70,19 @@ export default {
     formatData: function() {
       let tmp
       if (!Array.isArray(this.data)) {
+        console.log("非数组")
         tmp = [this.data]
       } else {
+        console.log("数组")
         tmp = this.data
+        console.log(tmp)
       }
       const func = this.evalFunc || treeToArray
       const args = this.evalArgs ? Array.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll]
-      return func.apply(null, args)
+      console.log("信息")
+      console.log(func.apply(null, args))
+      // return func.apply(null, args)
+      return tmp;
     }
   },
   methods: {

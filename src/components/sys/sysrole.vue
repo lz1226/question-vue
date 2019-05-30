@@ -113,7 +113,7 @@
 
 <script>
 //    import RoleApi from '../../api/sysrole';
-      import * as RoleApi from '../../api/sysrole';//这儿调用连接后台的js
+      import * as RoleApi from '../../api/sysrole';
 
     export default {
         name: 'basetable',
@@ -144,7 +144,7 @@
         },
         created() {
 //            this.getData();
-          this.initData();//在这儿调用初始时显示值
+          this.initData();
         },
         computed: {},
         methods: {
@@ -153,12 +153,9 @@
             this.initData();
           },
           async initData() {
-          //这个是初始方法，
               const param = {...this.pagination};
-              console.log(this.req.roleName);
               param.roleName = this.req.roleName;
-              const ret = await RoleApi.listRole(param);//这个是连接后台的controller
-              console.log(ret.data)
+              const ret = await RoleApi.listRole(param);
               if(ret.code == "2000"){
                 this.tableData = ret.data ? ret.data : [];
                 this.tableData.forEach(item => {
@@ -189,10 +186,8 @@
             //编辑
             if(sysRole.id > 0){
               RoleApi.editRole(sysRole);
-              console.log("id")
             }else {
               //添加信息
-              console.log("else")
               RoleApi.createRole(sysRole);
             };
             this.editVisible = false;
@@ -200,7 +195,6 @@
           },
           handleDelete(index, row) {
             this.ids = [row.id];
-            console.log(this.ids)
             this.delVisible = true;
           },
           delAll() {
@@ -210,12 +204,10 @@
             for (let i = 0; i < length; i++) {
               this.ids.push(this.multipleSelection[i].id);
             }
-            console.log(this.ids)
           },
           // 确定删除
          async deleteRow() {
             const ids = this.ids;
-            console.log(ids)
             const ret = await RoleApi.batchDelete(ids);
             this.initData();
             this.delVisible = false;
@@ -229,35 +221,38 @@
             this.roleId = row.id;
             this.checkMenuData=[];
             this.menuTreeData=[];
-            console.log(this.roleId);
             this.getMenuTreeData();
             this.getCheckMenuData(this.roleId);
             this.configMenuDialog = true;
+            console.log(this.menuTreeData)
+            console.log(this.checkMenuData)
 
           },
          async getMenuTreeData() {
            // this.loading = false;
            const ret = await RoleApi.getMenuTreeData();
-           console.log("授权")
-           console.log(ret.data)
            if(ret.code === "2000"){
              this.menuTreeData = ret.data;
+             console.log("數據")
+             console.log(this.menuTreeData)
            }
           },
           async getCheckMenuData(roleId) {
            const ret = await RoleApi.getCheckMenuData(roleId);
+           console.log(ret.data);
            if(ret.code === "2000"){
              this.checkMenuData = ret.data;
+             console.log(this.checkMenuData)
            };
           },
            async saveMuenPerms(){
-            console.log("this.checkMenuData ")
                 this.checkMenuData = [];
                 this.checkMenuData = this.checkMenuData.concat(this.$refs.treeMenu.getCheckedKeys());
+                // this.checkMenuData = this.checkMenuData.concat(this.$refs.treeMenu.getHalfCheckedKeys());
                 const params ={id:this.roleId,menuIds:this.checkMenuData}
+                console.log(params)
                 const ret = await RoleApi.saveMuenPerms(params);
                 if(ret.code === "2000"){
-                    console.log(ret.data);
                     this.initData();
                   this.$message.success("授权成功！");
                 }else{
