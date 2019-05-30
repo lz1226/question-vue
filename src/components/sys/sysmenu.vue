@@ -206,14 +206,10 @@
             this.getTreeData();
         },
         methods: {
-          async getTreeData(name) {
-            console.log("name")
-            console.log(name)
-            if(name == undefined){
-                name = "null";
-            }
-            console.log(name)
-            const ret = await  MenuApi.getTreeData(name);
+          async getTreeData() {
+            const sysMenuDto = {};
+            sysMenuDto.name = this.req.name;
+            const ret = await  MenuApi.getTreeData(sysMenuDto);
             if(ret.code === "2000"){
               this.treeData = ret.data;
               this.wrapMenuType(this.treeData);
@@ -293,7 +289,7 @@
           },
           search() {
 //            console.log(this.req.name)
-            this.getTreeData(this.req.name);
+            this.getTreeData();
 //                this.is_search = true;
 //                this.getTreeData();
           },

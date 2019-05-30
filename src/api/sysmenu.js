@@ -1,6 +1,6 @@
 import {get, post} from './base/request-util'
 
-export const getTreeData = () => get('/sysMenu/tree/menu');
+export const getTreeData = (sysMenuDto) => get('/sysMenu/tree/menu',sysMenuDto);
 
 export const getData = (params) => get('/sysMenu/page/list',params);
 
