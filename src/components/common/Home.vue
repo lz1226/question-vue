@@ -35,9 +35,6 @@
           ...mapGetters(['getToken']),
         },
         created(){
-            console.log("getsession");
-            console.log(this.sessionId)
-             console.log(this.token)
             bus.$on('collapse', msg => {
                 this.collapse = msg;
             })

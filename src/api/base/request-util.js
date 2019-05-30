@@ -2,6 +2,7 @@ import * as axios from 'axios'
 // import {REFRESH_TOKEN} from "../../store/mutation-types"
 import store from '@/store';
 import {app} from '@/main';
+import { commonParams } from '../config'
 
 
 // const baseUri = 'http://localhost:9000/v3/cmcc';
@@ -44,13 +45,14 @@ function reLogin(data) {
     app.$router.push({path: '/login'})
 }
 
-export const get = (uri) => {
+export const get = (uri,body) => {
     uri = baseUri + uri;
     return axios({
         method: 'get',
         url: uri,
         headers: {...assembleTokenHeader()},
-        xhrFields:{withCredentials:true}
+        xhrFields:{withCredentials:true},
+        params: body,
     }).then(response => {
         if (response.status === 200) {
             if (response.headers && response.headers['token']) {

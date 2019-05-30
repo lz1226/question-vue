@@ -1,17 +1,21 @@
+import {get,post} from '../../api/base/request-util'
 
-import http from '@/util/http'
+export const getNavList = () => get('/sysMenu/nav');
 
 
-export default {
-    // 修改密码
-    modifyPwd : params => {
-        return http.post("/sys/user/change/password", params)
-    },
-    handleLogout:()=>{
-    	return http.get("/logout", {})
-    },
-    getNavList:()=>{
-        return http.get("/sys/menu/nav", {})
-    }
-
-}
+// import http from '@/util/http'
+//
+//
+// export default {
+//     // 修改密码
+//     modifyPwd : params => {
+//         return http.post("/sys/user/change/password", params)
+//     },
+//     handleLogout:()=>{
+//     	return http.get("/logout", {})
+//     },
+//     getNavList:()=>{
+//         return http.get("/sys/menu/nav", {})
+//     }
+//
+// }

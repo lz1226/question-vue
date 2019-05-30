@@ -15,16 +15,16 @@
                 </div>
 
                 <!-- 用户头像 -->
-              <div class="user-avator"><img src="../../assets/logo.png" ></div>
-                <!--<div class="user-avator"><img :src="sysuser.avatar" ></div>-->
+              <!--<div class="user-avator"><img src="../../assets/logo.png" ></div>-->
+                <div class="user-avator"><img :src="sysuser.avatar" ></div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
-                    <!--<span class="el-dropdown-link">-->
-                        <!--{{sysuser.account}} <i class="el-icon-caret-bottom"></i>-->
-                    <!--</span>-->
-                  <span class="el-dropdown-link">
-                        test <i class="el-icon-caret-bottom"></i>
+                    <span class="el-dropdown-link">
+                        {{sysuser.account}} <i class="el-icon-caret-bottom"></i>
                     </span>
+                  <!--<span class="el-dropdown-link">-->
+                        <!--test <i class="el-icon-caret-bottom"></i>-->
+                    <!--</span>-->
                     <el-dropdown-menu slot="dropdown">
                         <a href="https://www.jianshu.com/u/e2fcc1cdaca1" target="_blank">
                             <el-dropdown-item>作者简书</el-dropdown-item>
@@ -41,7 +41,7 @@
 </template>
 <script>
     import bus from '../common/bus';
-    import AccountApi from '../common/account';
+//    import AccountApi from '../common/account';
 
     export default {
         data() {
@@ -57,11 +57,12 @@
             username(){
                 return this.name;
             },
-            // sysuser(){
-            //     let sysuser = JSON.parse(localStorage.getItem('sysuser'));
-            //
-            //     return sysuser?sysuser:this.user;
-            // }
+             sysuser(){
+                 let sysuser = JSON.parse(localStorage.getItem('sysuser'));
+                  console.log("登录信息")
+                console.log(sysuser)
+                 return sysuser?sysuser:this.user;
+             }
 
         },
         methods:{
@@ -72,12 +73,12 @@
                 }
             },
             handleLogout(){
-                AccountApi.handleLogout().then((res) => {
-                    localStorage.removeItem('sysuser')
-                    this.$router.push('/login');
-                }, (err) => {
-                    this.$message.error(err.msg);
-                })
+//                AccountApi.handleLogout().then((res) => {
+//                    localStorage.removeItem('sysuser')
+//                    this.$router.push('/login');
+//                }, (err) => {
+//                    this.$message.error(err.msg);
+//                })
             },
             // 侧边栏折叠
             collapseChage(){

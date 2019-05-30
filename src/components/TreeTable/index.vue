@@ -70,18 +70,13 @@ export default {
     formatData: function() {
       let tmp
       if (!Array.isArray(this.data)) {
-        console.log("非数组")
         tmp = [this.data]
       } else {
-        console.log("数组")
         tmp = this.data
-        console.log(tmp)
       }
       const func = this.evalFunc || treeToArray
       const args = this.evalArgs ? Array.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll]
-      console.log("信息")
-      console.log(func.apply(null, args))
-      // return func.apply(null, args)
+      func.apply(null, args);
       return tmp;
     }
   },

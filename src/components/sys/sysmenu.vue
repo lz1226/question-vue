@@ -154,7 +154,7 @@
                 treeData: [],
                 page: {pageNo: 1, pageSize: 20},
                 multipleSelection: [],
-                is_search: false,
+//                is_search: false,
                 editVisible: false,
                 delVisible: false,
                 menu: {},
@@ -193,10 +193,6 @@
                     {
                         text: '排序',
                         value: 'orderNum'
-                    },
-                    {
-                      text: 'id',
-                      value: 'id'
                     }
                 ],
                 defaultProps: {
@@ -211,122 +207,95 @@
         },
         methods: {
           async getTreeData() {
-            const ret = await  MenuApi.getTreeData();
-            console.log("this.treeData")
-            console.log(ret.data);
+            const sysMenuDto = {};
+            sysMenuDto.name = this.req.name;
+            const ret = await  MenuApi.getTreeData(sysMenuDto);
             if(ret.code === "2000"){
               this.treeData = ret.data;
-              console.log(this.treeData)
-//                     this.wrapMenuType(this.treeData);
+              this.wrapMenuType(this.treeData);
             }else{
               this.$message.error("数据不存在!");
             }
           },
-
+          //编辑
+          async handleEdit(index, row) {
+               this.menu.delFlag = 0;
+              const ret = await MenuApi.findMenu(row.id);
+              if(ret.code === "2000"){
+                this.menu = ret.data;
+              }else{
+                this.loading = false;
+                this.$message.error("失败!");
+              }
+               this.editVisible = true;
+          },
+          handleAdd() {
+               this.menu = {};
+               this.menu.delFlag = 0;
+               this.editVisible = true;
+          },
             goToSelectMenu(){
-//                this.selectMenuDialog = true;
+               this.selectMenuDialog = true;
             },
             selectMenuClick(data){
-//                this.selectMenuDialog = false;
-//                this.menu.parentId=data.id;
-//                this.menu.pname=data.name;
+               this.selectMenuDialog = false;
+               this.menu.parentId=data.id;
+               this.menu.pname=data.name;
             },
+          // 保存编辑
+          saveEdit() {
+            const sysMenu = this.menu;
+            //编辑
+            if(sysMenu.id > 0){
+              MenuApi.editMenu(sysMenu);
+            }else {
+              //添加信息
+              MenuApi.createMenu(sysMenu);
+            };
+            this.editVisible = false;
+            this.getTreeData();
+          },
+          handleDelete(index, row) {
+            this.ids = [row.id];
+            this.delVisible = true;
+          },
+          delAll() {
+                this.delVisible = true;
+                this.ids = [];
+                const length = this.multipleSelection.length;
+                for (let i = 0; i < length; i++) {
+                    this.ids.push(this.multipleSelection[i].id);
+                }
 
+          },
+          // 确定删除
+          async deleteRow() {
+              const ids = this.ids;
+            const ret = await MenuApi.batchDelete(ids);
+            if(ret.code === "2000"){
+              this.$message.success("删除成功!");
+            }
+            this.getTreeData();
+            this.delVisible = false;
+          },
+          wrapMenuType(treeData){
+            treeData.forEach(item=>{
+              item.typeName = this.menuType[item.type].name;
+              if(item.children){
+                this.wrapMenuType(item.children);
+              }
+            })
 
-
-//            reload() {
-//                this.page.pageNo = 1
-//                this.getTreeData()
-//            },
-
-            search() {
+          },
+          search() {
+//            console.log(this.req.name)
+            this.getTreeData();
 //                this.is_search = true;
 //                this.getTreeData();
-            },
-
-            handleAdd() {
-//                this.menu = {};
-//                this.menu.delFlag = 0;
-//                this.editVisible = true;
-            },
-           async handleEdit(index, row) {
-//                this.menu.delFlag = 0;
-//               const ret = await MenuApi.findMenu(row.id);
-//               if(ret.data === "2000"){
-//                 this.menu = ret.data;
-//               }else{
-//                 this.loading = false;
-//                 this.$message.error("失败!");
-//               }
-//                this.editVisible = true;
-            },
-            handleDelete(index, row) {
-//                this.ids = [row.id];
-//                this.delVisible = true;
-            },
-            delAll() {
-//                this.delVisible = true;
-//                this.ids = [];
-//                const length = this.multipleSelection.length;
-//                for (let i = 0; i < length; i++) {
-//                    this.ids.push(this.multipleSelection[i].id);
-//                }
-
-            },
+          },
 //            handleSelectionChange(val) {
 //                this.multipleSelection = val;
 //            },
-            // 保存编辑
-            saveEdit() {
-
-//                 this.$set(this.tableData, this.idx, this.menu);
-//              console.log(this.menu)
-//              console.log(this.idx)
-//              console.log(this.tableData)
-//                this.loading = true
-//                MenuApi.save(this.menu).then((res) => {
-//                    this.loading = false
-//                    if (res.error === false) {
-//                        this.editVisible = false
-//                        this.$message.success(res.msg);
-//                        this.reload()
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//                }, (err) => {
-//                    this.loading = false
-//                    this.$message.error(err.msg);
-//                })
-
-            },
-            // 确定删除
-            deleteRow() {
-//                MenuApi.batchDelete(this.ids).then((res) => {
-//                    if (res.error === false) {
-//                        this.$message.success(res.msg);
-//                        this.reload()
-//                    } else {
-//                        this.$message.error(res.msg);
-//                    }
-//
-//                }, (err) => {
-//                    this.$message.error(err.msg);
-//                })
-                this.delVisible = false;
-            },
-            wrapMenuType(treeData){
-//                treeData.forEach(item=>{
-//                    item.typeName = this.menuType[item.type].name;
-//                    if(item.children){
-//                        this.wrapMenuType(item.children);
-//                    }
-//                })
-
-            }
-
-
-
-
         }
     }
 

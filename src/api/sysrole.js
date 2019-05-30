@@ -21,7 +21,7 @@ export const editRole = (sysRole) => post('/sysRole/edit',sysRole);
 export const createRole = (sysRole) => post('/sysRole/create',sysRole);
 
 /**
- * 添加用户角色信息
+ * 批量删除用户角色信息
  */
 export const batchDelete = (ids) => post('/sysRole/batchDelete',ids);
 
