@@ -4,20 +4,20 @@
             <el-col :span="8">
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
-                      <img src="../../assets/logo.png" class="user-avator" alt="">
-                      <div class="user-info-cont">
-                        <div class="user-info-name">test</div>
-                        <div>游客</div>
-                      </div>
-                        <!--<img :src="sysuser.avatar" class="user-avator" alt="">-->
-                        <!--<div class="user-info-cont">-->
-                            <!--<div class="user-info-name">{{sysuser.account}}</div>-->
+                      <!--<img src="../../assets/logo.png" class="user-avator" alt="">-->
+                      <!--<div class="user-info-cont">-->
+                        <!--<div class="user-info-name">test</div>-->
+                        <!--<div>游客</div>-->
+                      <!--</div>-->
+                        <img :src="sysuser.avatar" class="user-avator" alt="">
+                        <div class="user-info-cont">
+                            <div class="user-info-name">{{sysuser.account}}</div>
                             <!--<div>{{sysuser.roleNames[0]}}</div>-->
-                        <!--</div>-->
+                        </div>
                     </div>
-                    <div class="user-info-list">真实姓名：<span>test</span></div>
-                    <div class="user-info-list">所在部门：<span>产品部</span></div>
-                    <!--<div class="user-info-list">真实姓名：<span>{{sysuser.name}}</span></div>-->
+                    <!--<div class="user-info-list">真实姓名：<span>test</span></div>-->
+                    <!--<div class="user-info-list">所在部门：<span>产品部</span></div>-->
+                    <div class="user-info-list">真实姓名：<span>{{sysuser.name}}</span></div>
                     <!--<div class="user-info-list">所在部门：<span>{{sysuser.deptName}}</span></div>-->
                 </el-card>
 
@@ -69,12 +69,11 @@
             Schart
         },
         computed: {
-//            sysuser(){
-//                let sysuser = JSON.parse(localStorage.getItem('sysuser'));
-//                console.log(sysuser.account);
-//                console.log(sysuser.avatar);
-//                return sysuser?sysuser:this.user;
-//            }
+            sysuser(){
+                let sysuser = JSON.parse(localStorage.getItem('sysuser'));
+                console.log(sysuser);
+                return sysuser?sysuser:this.user;
+            }
         },
         created(){
 //            this.getDashboardContent();

@@ -58,6 +58,8 @@
               const res = {};
               res.sessionId = ret.data.sessionId;
               sessionStorage.setItem("sessionId", ret.data.sessionId);
+              localStorage.setItem('sysuser',JSON.stringify(ret.data.sysUser));
+              console.log()
               this.$router.push({path: '/home'});
             }
 
