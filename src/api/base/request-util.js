@@ -47,9 +47,6 @@ function reLogin(data) {
 
 export const get = (uri,body) => {
     uri = baseUri + uri;
-  const data = Object.assign({}, commonParams, body);
-    console.log("body")
-  console.log(body)
     return axios({
         method: 'get',
         url: uri,

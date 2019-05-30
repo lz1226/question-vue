@@ -76,8 +76,8 @@ export default {
       }
       const func = this.evalFunc || treeToArray
       const args = this.evalArgs ? Array.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll]
-      console.log(func.apply(null, args))
-      // return func.apply(null, args)
+      func.apply(null, args);
+        // return func.apply(null, args)
       return tmp;
     }
   },
